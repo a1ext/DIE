@@ -3,8 +3,14 @@
 from sark.qt import QtGui, QtCore, QtWidgets, form_to_widget, use_qt5
 if use_qt5:
     _QSortFilterProxyModel = QtCore.QSortFilterProxyModel
+    _MatchRecursive = QtCore.Qt.MatchRecursive
+    _MatchExactly = QtCore.Qt.MatchExactly
+    _PositionAtTop = QtWidgets.QAbstractItemView.PositionAtTop
 else:
     _QSortFilterProxyModel = QtGui.QSortFilterProxyModel
+    _MatchRecursive = QtCore.Qt.MatchFlag.MatchRecursive
+    _MatchExactly = QtCore.Qt.MatchFlag.MatchExactly
+    _PositionAtTop = QtWidgets.QAbstractItemView.ScrollHint.PositionAtTop
 
 import idaapi
 import idautils
@@ -156,7 +162,7 @@ class ValueView(PluginForm):
         @param item: module item
         """
         try:
-            item.setBackground(QtCore.Qt.GlobalColor.yellow)
+            item.setBackground(QtGui.QColor('yellow'))
             cur_font = item.font()
             cur_font.setBold(True)
             item.setFont(cur_font)
@@ -207,7 +213,7 @@ class ValueView(PluginForm):
             for persistent_index in self.highligthed_items:
                 if persistent_index.isValid():
                     item = self.valueModel.itemFromIndex(persistent_index)
-                    item.setBackground(QtCore.Qt.GlobalColor.white)
+                    item.setBackground(QtGui.QColor('white'))
                     cur_font = item.font()
                     cur_font.setBold(False)
                     item.setFont(cur_font)
@@ -232,7 +238,7 @@ class ValueView(PluginForm):
                 return
 
             matched_items = self.valueModel.match(root_index, DIE.UI.Value_Role, value.__hash__(), -1,
-                                                  QtCore.Qt.MatchFlag.MatchRecursive | QtCore.Qt.MatchFlag.MatchExactly)
+                                                  _MatchRecursive | _MatchExactly)
 
             for index in matched_items:
                 if not index.isValid():
@@ -240,7 +246,7 @@ class ValueView(PluginForm):
 
                 item = self.valueModel.itemFromIndex(index)
                 self.valueTreeView.expand(index)
-                self.valueTreeView.scrollTo(index, QtWidgets.QAbstractItemView.ScrollHint.PositionAtTop)
+                self.valueTreeView.scrollTo(index, _PositionAtTop)
                 self.highlight_item_row(item)
 
         except Exception as ex:

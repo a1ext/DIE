@@ -10,8 +10,14 @@ from sark.qt import QtGui, QtCore, QtWidgets, form_to_widget, use_qt5
 
 if use_qt5:
     _QSortFilterProxyModel = QtCore.QSortFilterProxyModel
+    _MatchRecursive = QtCore.Qt.MatchRecursive
+    _MatchExactly = QtCore.Qt.MatchExactly
+    _PositionAtTop = QtWidgets.QAbstractItemView.PositionAtTop
 else:
     _QSortFilterProxyModel = QtGui.QSortFilterProxyModel
+    _MatchRecursive = QtCore.Qt.MatchFlag.MatchRecursive
+    _MatchExactly = QtCore.Qt.MatchFlag.MatchExactly
+    _PositionAtTop = QtWidgets.QAbstractItemView.ScrollHint.PositionAtTop
 
 import DIE.UI.Die_Icons
 import DIE.UI.ValueViewEx
@@ -660,7 +666,7 @@ class FunctionView(PluginForm):
         @param item: module item
         """
         try:
-            item.setBackground(QtCore.Qt.GlobalColor.yellow)
+            item.setBackground(QtGui.QColor('yellow'))
             cur_font = item.font()
             cur_font.setBold(True)
             item.setFont(cur_font)
@@ -712,7 +718,7 @@ class FunctionView(PluginForm):
             for persistent_index in self.highligthed_items:
                 if persistent_index.isValid():
                     item = self.functionModel.itemFromIndex(persistent_index)
-                    item.setBackground(QtCore.Qt.GlobalColor.white)
+                    item.setBackground(QtGui.QColor('white'))
                     cur_font = item.font()
                     cur_font.setBold(False)
                     item.setFont(cur_font)
@@ -737,7 +743,7 @@ class FunctionView(PluginForm):
 
         for item in matched_items:
             self.functionTreeView.expand(item.index())
-            self.functionTreeView.scrollTo(item.index(), QtWidgets.QAbstractItemView.ScrollHint.PositionAtTop)
+            self.functionTreeView.scrollTo(item.index(), _PositionAtTop)
             self.highlight_item_row(item)
 
     def find_context_list(self, context_list):
@@ -753,7 +759,7 @@ class FunctionView(PluginForm):
 
             for func_context in context_list:
                 context_id = id(func_context)
-                matched_items = self.functionModel.match(root_index, DIE.UI.ContextId_Role, context_id, -1, QtCore.Qt.MatchFlag.MatchRecursive|QtCore.Qt.MatchFlag.MatchExactly)
+                matched_items = self.functionModel.match(root_index, DIE.UI.ContextId_Role, context_id, -1, _MatchRecursive | _MatchExactly)
 
                 for index in matched_items:
                     if not index.isValid():
@@ -764,7 +770,7 @@ class FunctionView(PluginForm):
 
                     item = self.functionModel.itemFromIndex(index)
                     self.functionTreeView.expand(index)
-                    self.functionTreeView.scrollTo(index, QtWidgets.QAbstractItemView.ScrollHint.PositionAtTop)
+                    self.functionTreeView.scrollTo(index, _PositionAtTop)
                     self.highlight_item_row(item)
 
             return True
