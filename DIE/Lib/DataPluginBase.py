@@ -1,5 +1,4 @@
-
-
+import idaapi
 import logging
 
 from yapsy.PluginManager import IPlugin
@@ -28,6 +27,7 @@ class DataPluginBase(IPlugin):
     typeName_norm_cb = None    # Type name normalizer callback function
 
     def __init__(self):
+        super(DataPluginBase, self).__init__()
         self.logger = logging.getLogger(__name__)
         self.type_params = None      # Currently parsed type parameters
 

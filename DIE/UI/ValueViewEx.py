@@ -1,6 +1,10 @@
 
 
-from PySide import QtGui, QtCore
+from sark.qt import QtGui, QtCore, QtWidgets, form_to_widget, use_qt5
+if use_qt5:
+    _QSortFilterProxyModel = QtCore.QSortFilterProxyModel
+else:
+    _QSortFilterProxyModel = QtGui.QSortFilterProxyModel
 
 import idaapi
 import idautils
@@ -37,10 +41,10 @@ class ValueView(PluginForm):
         self.function_view = DIE.UI.FunctionViewEx.get_view()
 
         # Get parent widget
-        self.parent = self.FormToPySideWidget(form)
+        self.parent = form_to_widget(form)
 
         self.valueModel = QtGui.QStandardItemModel()
-        self.valueTreeView = QtGui.QTreeView()
+        self.valueTreeView = QtWidgets.QTreeView()
         self.valueTreeView.setExpandsOnDoubleClick(False)
 
         self.valueTreeView.doubleClicked.connect(self.itemDoubleClickSlot)
@@ -49,7 +53,7 @@ class ValueView(PluginForm):
         self.valueTreeView.setModel(self.valueModel)
 
         # Toolbar
-        self.value_toolbar = QtGui.QToolBar()
+        self.value_toolbar = QtWidgets.QToolBar()
 
         # Value type combobox
         type_list = []
@@ -57,16 +61,16 @@ class ValueView(PluginForm):
             type_list = self.die_db.get_all_value_types()
             type_list.insert(0, "All Values")
 
-        self.value_type_combo = QtGui.QComboBox()
+        self.value_type_combo = QtWidgets.QComboBox()
         self.value_type_combo.addItems(type_list)
         self.value_type_combo.activated[str].connect(self.on_value_type_combobox_change)
 
-        self.value_type_label = QtGui.QLabel("Value Type:  ")
+        self.value_type_label = QtWidgets.QLabel("Value Type:  ")
         self.value_toolbar.addWidget(self.value_type_label)
         self.value_toolbar.addWidget(self.value_type_combo)
 
         # Layout
-        layout = QtGui.QGridLayout()
+        layout = QtWidgets.QGridLayout()
         layout.addWidget(self.value_toolbar)
         layout.addWidget(self.valueTreeView)
 
@@ -236,7 +240,7 @@ class ValueView(PluginForm):
 
                 item = self.valueModel.itemFromIndex(index)
                 self.valueTreeView.expand(index)
-                self.valueTreeView.scrollTo(index, QtGui.QAbstractItemView.ScrollHint.PositionAtTop)
+                self.valueTreeView.scrollTo(index, QtWidgets.QAbstractItemView.ScrollHint.PositionAtTop)
                 self.highlight_item_row(item)
 
         except Exception as ex:
@@ -249,7 +253,7 @@ class ValueView(PluginForm):
 ###############################################################################################
 
 
-    @QtCore.Slot(QtCore.QModelIndex)
+    # @QtCore.Slot(QtCore.QModelIndex)
     def itemDoubleClickSlot(self, index):
         """
         TreeView DoubleClicked Slot.
@@ -280,7 +284,7 @@ class ValueView(PluginForm):
                 self.valueTreeView.setModel(self.valueModel)
             return
 
-        valuetypeProxyModel = QtGui.QSortFilterProxyModel()
+        valuetypeProxyModel = _QSortFilterProxyModel()
         valuetypeProxyModel.setFilterRole(DIE.UI.ValueType_Role)
         valuetypeProxyModel.setFilterRegExp(value_type)
 

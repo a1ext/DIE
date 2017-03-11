@@ -2,7 +2,7 @@ from DIE.Lib import DieConfig
 import idaapi
 import os
 import DIE.Lib.DieConfig
-from PySide import QtGui
+from sark.qt import QtGui
 
 
 class DieIcons():

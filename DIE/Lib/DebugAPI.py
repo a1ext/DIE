@@ -10,6 +10,7 @@ import pstats
 import StringIO
 import time
 
+import idaapi
 from idaapi import *
 from idautils import *
 from idc import *

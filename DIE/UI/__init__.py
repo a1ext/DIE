@@ -1,6 +1,6 @@
 
 
-from PySide import QtCore
+from sark.qt import QtCore
 
 # Define custom data roles
 Function_Role = QtCore.Qt.UserRole+1

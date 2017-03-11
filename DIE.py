@@ -191,7 +191,7 @@ class DieManager():
         self.add_menu_item_helper("DIE/", "About", "", self.show_about)
         idaapi.set_menu_item_icon("DIE/About", self.icon_list["die"])
         # Mark\Unmark Execution Flow
-        self.add_menu_item_helper("DIE/", "Mark\Unmark Execution Flow", "", self.mark_exec_flow)
+        self.add_menu_item_helper("DIE/", r"Mark\Unmark Execution Flow", "", self.mark_exec_flow)
         # Show complete execution CFG
         self.add_menu_item_helper("DIE/", "Show CFG", "", self.show_cfg)
 
